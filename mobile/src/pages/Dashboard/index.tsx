@@ -1,12 +1,14 @@
-import Reactr, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
-  View,
   Text,
+  View,
   SafeAreaView,
   TouchableOpacity,
   TextInput,
   StyleSheet,
 } from "react-native";
+
+import { Feather } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -14,8 +16,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 
 import { api } from "../../services/api";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function Dashboard() {
+  const { signOut } = useContext(AuthContext);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<StackParamsList>>();
 
@@ -42,18 +47,23 @@ export default function Dashboard() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Novo pedido</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Número da mesa"
-        placeholderTextColor="#F0F0F0"
-        keyboardType="numeric"
-        value={number}
-        onChangeText={setNumber}
-      />
-      <TouchableOpacity style={styles.button} onPress={openOrder}>
-        <Text style={styles.buttonText}>Abrir mesa</Text>
+      <TouchableOpacity style={styles.buttonExit} onPress={signOut}>
+        <Feather name="log-out" color="#FFF" size={24} />
       </TouchableOpacity>
+      <View style={styles.containerOrder}>
+        <Text style={styles.title}>Novo pedido</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Número da mesa"
+          placeholderTextColor="#F0F0F0"
+          keyboardType="numeric"
+          value={number}
+          onChangeText={setNumber}
+        />
+        <TouchableOpacity style={styles.button} onPress={openOrder}>
+          <Text style={styles.buttonText}>Abrir mesa</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -61,10 +71,22 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 15,
     backgroundColor: "#1D1D2E",
+  },
+  containerOrder: {
+    flex: 1,
+    width: "90%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonExit: {
+    flexDirection: "column",
+    alignSelf: "flex-end",
+    marginRight: "5%",
+    marginTop: 10,
   },
   title: {
     fontSize: 30,
@@ -73,7 +95,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   input: {
-    width: "90%",
+    width: "100%",
     height: 60,
     backgroundColor: "#101026",
     borderRadius: 4,
@@ -83,7 +105,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   button: {
-    width: "90%",
+    width: "100%",
     height: 45,
     backgroundColor: "#3FFFA3",
     borderRadius: 4,
